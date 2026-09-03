@@ -1,0 +1,14 @@
+# secrets — never commit
+.env
+.env.*
+!.env.example
+
+# spotipy OAuth token cache (contains a long-lived refresh token)
+.cache
+.cache-*
+
+# python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
