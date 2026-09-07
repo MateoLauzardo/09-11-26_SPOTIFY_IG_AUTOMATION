@@ -6,6 +6,10 @@ from spotipy.oauth2 import SpotifyOAuth
 
 
 
+#! HOST ON AZURE SO ITS RUNNIGN 24/7
+
+
+
 load_dotenv()
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET")
@@ -16,7 +20,8 @@ redirect_uri = os.getenv("REDIRECT_URI", "http://127.0.0.1:8888/callback")
 SCOPE = "user-read-currently-playing user-read-playback-state"
 
 
-#NOTE Logins into my spotify
+
+#Logins into my spotify
 def get_client():
     """Log in (opens a browser the first time) and cache the token in .cache."""
     auth = SpotifyOAuth(
@@ -30,13 +35,13 @@ def get_client():
     return spotipy.Spotify(auth_manager=auth)
 
 
-#NOTE this just formats milliseconds its, minutes and seconds
+#This just formats milliseconds its, minutes and seconds
 def fmt_ms(ms):
     seconds = ms // 1000
     return f"{seconds // 60}:{seconds % 60:02d}"
 
 
-#NOTE This just returns a summary of the song playying (requires the playback object from the spotify api)
+#This just returns a summary of the song playying (requires the playback object from the spotify api)
 def describe(playback):
     """Turn a currently-playing payload into a one-line summary, or None if idle."""
     if not playback or not playback.get("item"):
@@ -64,25 +69,44 @@ def main():
         raise SystemExit("Set CLIENT_ID and CLIENT_SECRET in .env")
 
     sp = get_client()
-    me = sp.me()
+    me = sp.me() 
     
     print(f"Logged in as {me['display_name']} ({me['id']})\n")
 
+
     last = None
     
+    
+    
     while True:
+        
         playback = sp.current_playback() 
         line = describe(playback)
-
+        
+        
+        # detecets if nothing is playing right now
         if line is None:
             if last != "idle":
                 print("Nothing playing right now.")
                 last = "idle"
-        else:
-            track_id = (playback["item"] or {}).get("id")
-            if track_id != last:
-                print(line)
-                last = track_id
+        
+        
+        
+        #STUB: this handles the case where playback is paused (DONE)
+        # this has to come BEFORE the new-track check: it parks "paused" in last,
+        # which would otherwise look like a track change and reprint the song.
+        elif not playback.get("is_playing"):
+            if last != "paused":
+                print("Stopped playing.")
+                last = "paused"
+
+
+        #STUB: This handles the case where a new track starts playing (DONE)
+        elif (track_id := playback["item"].get("id")) != last:
+            print(line)
+            last = track_id
+            
+                
 
         time.sleep(5)
 
