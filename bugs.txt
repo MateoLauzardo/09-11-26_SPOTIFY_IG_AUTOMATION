@@ -1,0 +1,6 @@
+## TODO: use IG officail API (may not support all features)
+## TODO: use selenium to automate the browser if it comes to that as we r running into not robot 
+
+## TODO: https://stackoverflow.com/questions/64769138/how-can-i-bypass-the-429-error-from-www-instagram-com
+(we could get VPN change IP address as others say this can work)
+
