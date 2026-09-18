@@ -76,8 +76,8 @@ def describe(playback):
         
 
 
-    position = fmt_ms(playback.get("progress_ms"))
-    duration = fmt_ms(item.get("duration_ms"))
+    position = fmt_ms(playback.get("progress_ms") or 0)
+    duration = fmt_ms(item.get("duration_ms") or 0)
     state = "▶" if playback.get("is_playing") else "❚❚"
 
     return f"{state} {item['name']} — {artists}  [{position}/{duration}]"
