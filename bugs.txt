@@ -1,6 +1,10 @@
-## TODO: use IG officail API (may not support all features)
-## TODO: use selenium to automate the browser if it comes to that as we r running into not robot 
+## TODO: use selenium to automate the browser if it comes to that as we r running into not robot (done)
 
 ## TODO: https://stackoverflow.com/questions/64769138/how-can-i-bypass-the-429-error-from-www-instagram-com
 (we could get VPN change IP address as others say this can work)
 
+
+
+## TODO: 
+when you run instagram.py opens up this link which ask you to login 
+https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Fdirect%2Finbox%2F%3Fhl%3Den%26__coig_login%3D1#

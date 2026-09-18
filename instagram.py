@@ -1,8 +1,9 @@
-import pyautogui # types keys, blindly
-import pyperclip
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import os
-import time
-import webbrowser # opens pages
+
 from dotenv import load_dotenv
 
 
@@ -12,21 +13,32 @@ password = os.getenv("INSTAGRAM_PASSWORD")
 insgram_url = os.getenv("INSTAGRAM_URL")
 
 
+driver = webdriver.Chrome()
+
+
 def instagram_login():
 
-    # Open Instagram in the default browser (this actually launches/focuses it)
-    webbrowser.open(insgram_url)
-    time.sleep(5)  # Wait for the page to load
+    try:
+
+        wait = WebDriverWait(driver, 15)
+
+        driver.get(insgram_url)
 
 
-    pyperclip.copy(username)  # Copy the username to clipboard
-    pyautogui.hotkey("ctrl", "v")  # Paste the username
-    pyautogui.press("tab")  # Move to the password field
-    pyperclip.copy(password)  # Copy the password to clipboard
-    pyautogui.hotkey("ctrl", "v")  # Paste the password
-    pyautogui.press("enter")  # Press Enter to log in
+        note = wait.until(EC.element_to_be_clickable(
+            (By.XPATH, '//div[contains(text(), "First note in a while")]')
+        ))
 
 
+        note.click()
+
+        input("Press Enter to close...")
+
+
+        
+
+    except Exception as e:
+        print(f"An error occurred during Instagram login: {e}")
 
 
 

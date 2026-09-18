@@ -33,18 +33,51 @@ def get_client():
 
 
 
+"""
+    Describe the current playback state.
+
+    playback = {
+        "is_playing": True,
+        "progress_ms": 123385,          # 2:03 into the song
+        "item": {                       # ← the track, its own dict
+            "name": "Heads Will Roll",
+            "id": "18oWEPapjNt32E6sCM6VLb",
+            "duration_ms": 221000,      # 3:41 long
+            "artists": [                # ← a LIST of dicts
+                {"name": "Yeah Yeah Yeahs", "id": "3TNt..."}
+            ]
+        },
+        "device": {...}, "shuffle_state": ..., "repeat_state": ...
+        }
+
+"""
 
 
-#This just returns a summary of the song playying (requires the playback object from the spotify api)
+#This just returns the song playing, artist name, position and duration 
 def describe(playback):
-    """Turn a currently-playing payload into a one-line summary, or None if idle."""
+
+
+
     if not playback or not playback.get("item"):
         return None
 
-    item = playback["item"]
-    artists = ", ".join(a["name"] for a in item.get("artists", []))
-    position = fmt_ms(playback.get("progress_ms") or 0)
-    duration = fmt_ms(item.get("duration_ms") or 0)
+    item = playback["item"] # dictionary of the song playing right now
+
+
+    artists = ""
+
+    # .get gives you the item in the dictionary, if it exists, otherwise it returns None. This is safer than using item["artists"] directly, which would raise a KeyError if "artists" is not present in the dictionary.
+    for a in item.get("artists", []):
+
+        if artists:
+            artists += ", "
+
+        artists += a["name"]
+        
+
+
+    position = fmt_ms(playback.get("progress_ms"))
+    duration = fmt_ms(item.get("duration_ms"))
     state = "▶" if playback.get("is_playing") else "❚❚"
 
     return f"{state} {item['name']} — {artists}  [{position}/{duration}]"
@@ -59,19 +92,23 @@ def spotify_logic():
         raise SystemExit("Set CLIENT_ID and CLIENT_SECRET in .env")
 
     sp = get_client()
-    me = sp.me() # gets user name and ID 
+    me = sp.me() # gets a hashmap of name and id 
     
     print(f"Logged in as {me['display_name']} ({me['id']})\n")
 
 
+
+
+
+
+    # flag
     last = None
-    
     
     
     while True:
         
         playback = sp.current_playback() 
-        line = describe(playback) # gets the current song playing and formats it into a string
+        line = describe(playback) 
         
         
         # detecets if nothing is playing right now
